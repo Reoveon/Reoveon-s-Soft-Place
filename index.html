@@ -8,71 +8,62 @@
 
 <body>
 
-<header>
-<h1>🌸 Reoveons Soft Place</h1>
+<div class="background"></div>
+<canvas id="particles"></canvas>
 
-<div class="menu">
-<button onclick="showSection('remover')">Background Remover</button>
-<button onclick="showSection('username')">Username Generator</button>
-<button onclick="showSection('font')">Font Loader</button>
-</div>
+<header>
+
+<h2>🌸 Reoveons Soft Place</h2>
+
+<nav>
+<button onclick="switchTab('home')">Home</button>
+<button onclick="switchTab('tools')">Tools</button>
+<button onclick="toggleDark()">🌙</button>
+</nav>
+
 </header>
 
 
 <main>
 
-<!-- Background Remover -->
-<section id="remover" class="section active">
+<section id="home" class="tab active">
 
-<h2>Background Remover</h2>
+<div class="card">
 
-<input type="file" id="imageUpload" multiple>
+<h1>reoveon</h1>
 
-<label>Color to Remove</label>
-<input type="color" id="removeColor" value="#ffffff">
+<p class="quote">"soft spaces create soft minds."</p>
 
-<button onclick="removeBackground()">Remove Background</button>
+<p>
+welcome to my cozy corner of the internet.
+explore tools, relax and listen to music.
+</p>
 
-<div id="imageContainer"></div>
-
-</section>
-
-
-<!-- Username Generator -->
-<section id="username" class="section">
-
-<h2>Username Generator</h2>
-
-<label>Character Length (1-10)</label>
-<input type="number" id="charLength" min="1" max="10" value="5">
-
-<label>Amount (1-100)</label>
-<input type="number" id="userAmount" min="1" max="100" value="10">
-
-<button onclick="generateUsernames()">Generate</button>
-
-<div id="usernameList"></div>
+</div>
 
 </section>
 
 
-<!-- Font Loader -->
-<section id="font" class="section">
+<section id="tools" class="tab">
 
-<h2>Font Loader</h2>
+<div class="card">
 
-<input type="file" id="fontUpload" accept=".ttf,.otf">
+<h2>tools</h2>
 
-<input type="text" id="fontText" placeholder="Type something...">
+<p>background remover</p>
+<p>username generator</p>
+<p>font loader</p>
 
-<button onclick="renderFont()">Render</button>
-
-<canvas id="fontCanvas"></canvas>
+</div>
 
 </section>
-
 
 </main>
+
+
+<audio autoplay loop>
+<source src="music.mp3">
+</audio>
 
 <script src="script.js"></script>
 

@@ -1,153 +1,76 @@
+/* tab switching */
 
-function showSection(section){
+function switchTab(tab){
 
-document.querySelectorAll(".section").forEach(s=>{
-s.classList.remove("active")
+document.querySelectorAll(".tab").forEach(t=>{
+t.classList.remove("active")
 })
 
-document.getElementById(section).classList.add("active")
+document.getElementById(tab).classList.add("active")
 
 }
 
 
+/* dark mode */
 
-let uploadedImages=[]
+function toggleDark(){
 
-document.getElementById("imageUpload").addEventListener("change",function(e){
-
-const container=document.getElementById("imageContainer")
-container.innerHTML=""
-
-uploadedImages=[]
-
-for(let file of e.target.files){
-
-let img=document.createElement("img")
-img.src=URL.createObjectURL(file)
-
-container.appendChild(img)
-
-uploadedImages.push(img)
-
-}
-
-})
-
-
-
-function removeBackground(){
-
-const color=document.getElementById("removeColor").value
-
-const r=parseInt(color.substr(1,2),16)
-const g=parseInt(color.substr(3,2),16)
-const b=parseInt(color.substr(5,2),16)
-
-uploadedImages.forEach(img=>{
-
-let canvas=document.createElement("canvas")
-let ctx=canvas.getContext("2d")
-
-canvas.width=img.width
-canvas.height=img.height
-
-ctx.drawImage(img,0,0)
-
-let data=ctx.getImageData(0,0,canvas.width,canvas.height)
-
-for(let i=0;i<data.data.length;i+=4){
-
-let dr=data.data[i]
-let dg=data.data[i+1]
-let db=data.data[i+2]
-
-let diff=Math.abs(dr-r)+Math.abs(dg-g)+Math.abs(db-b)
-
-if(diff<100){
-data.data[i+3]=0
-}
-
-}
-
-ctx.putImageData(data,0,0)
-
-img.src=canvas.toDataURL()
-
-})
+document.body.classList.toggle("dark")
 
 }
 
 
+/* particles */
 
-function generateUsernames(){
-
-const length=parseInt(document.getElementById("charLength").value)
-const amount=parseInt(document.getElementById("userAmount").value)
-
-const chars="abcdefghijklmnopqrstuvwxyz"
-
-let output=""
-
-for(let i=0;i<amount;i++){
-
-let name=""
-
-for(let j=0;j<length;j++){
-name+=chars[Math.floor(Math.random()*chars.length)]
-}
-
-output+=name+"<br>"
-
-}
-
-document.getElementById("usernameList").innerHTML=output
-
-}
-
-
-
-let loadedFont=null
-
-document.getElementById("fontUpload").addEventListener("change",function(e){
-
-const file=e.target.files[0]
-
-const reader=new FileReader()
-
-reader.onload=function(){
-
-const font=new FontFace("customFont",reader.result)
-
-font.load().then(function(loaded){
-
-document.fonts.add(loaded)
-loadedFont="customFont"
-
-})
-
-}
-
-reader.readAsArrayBuffer(file)
-
-})
-
-
-
-function renderFont(){
-
-const text=document.getElementById("fontText").value
-const canvas=document.getElementById("fontCanvas")
-
+const canvas=document.getElementById("particles")
 const ctx=canvas.getContext("2d")
 
-canvas.width=800
-canvas.height=200
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let particles=[]
+
+/* medium amount */
+
+for(let i=0;i<90;i++){
+
+particles.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*3,
+speed:Math.random()*0.6
+
+})
+
+}
+
+
+function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-ctx.font="60px "+loadedFont
-ctx.fillStyle="#000"
+ctx.fillStyle="rgba(255,255,255,0.6)"
 
-ctx.fillText(text,50,120)
+particles.forEach(p=>{
+
+p.y-=p.speed
+
+if(p.y<0){
+
+p.y=canvas.height
+p.x=Math.random()*canvas.width
 
 }
+
+ctx.beginPath()
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
+ctx.fill()
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
