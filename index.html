@@ -18,7 +18,6 @@ nav{
 position:fixed;
 top:15px;
 right:20px;
-z-index:1000;
 }
 
 nav button{
@@ -29,7 +28,6 @@ border-radius:8px;
 background:#222;
 color:white;
 cursor:pointer;
-transition:.2s;
 }
 
 nav button:hover{
@@ -54,24 +52,15 @@ max-width:1000px;
 margin:auto;
 }
 
-canvas{
-border:1px solid white;
-margin-top:10px;
-max-width:300px;
-display:block;
-}
-
-input,button,select{
-margin-top:8px;
-padding:8px;
-border-radius:6px;
-border:none;
-}
-
 .imageRow{
 display:flex;
 flex-wrap:wrap;
 gap:20px;
+}
+
+canvas{
+border:1px solid white;
+max-width:300px;
 }
 
 </style>
@@ -81,11 +70,11 @@ gap:20px;
 <body>
 
 <nav>
-<button onclick="showPage('home')">Home</button>
-<button onclick="showPage('themes')">Themes</button>
-<button onclick="showPage('username')">Username</button>
-<button onclick="showPage('bgremove')">BG Remover</button>
-<button onclick="showPage('tools')">Tools</button>
+<button data-page="home">Home</button>
+<button data-page="themes">Themes</button>
+<button data-page="username">Username</button>
+<button data-page="bgremove">BG Remover</button>
+<button data-page="tools">Tools</button>
 </nav>
 
 <div id="home" class="page active">
@@ -106,7 +95,7 @@ Background Color<br>
 Text Color<br>
 <input type="color" id="textColor"><br><br>
 
-<button onclick="applyTheme()">Apply Theme</button>
+<button id="applyTheme">Apply Theme</button>
 
 </div>
 </div>
@@ -119,10 +108,10 @@ Text Color<br>
 Length<br>
 <input id="nameLength" type="number" value="10"><br>
 
-How many usernames?<br>
-<input id="nameCount" type="number" value="5"><br><br>
+How many?<br>
+<input id="nameCount" type="number" value="5"><br>
 
-<button onclick="generateUsernames()">Generate</button>
+<button id="generateNames">Generate</button>
 
 <div id="nameOutput"></div>
 
@@ -134,7 +123,7 @@ How many usernames?<br>
 
 <h2>Background Remover</h2>
 
-Color To Remove<br>
+Color<br>
 <input type="color" id="removeColor"><br>
 
 Tolerance<br>
@@ -146,7 +135,7 @@ Tolerance<br>
 
 <br>
 
-<button onclick="removeBackground()">Remove Background</button>
+<button id="removeBG">Remove Background</button>
 
 </div>
 </div>
@@ -156,8 +145,8 @@ Tolerance<br>
 
 <h2>Tools</h2>
 
-<button onclick="clearCanvas()">Clear Images</button>
-<button onclick="downloadAll()">Download All</button>
+<button id="clearImages">Clear Images</button>
+<button id="downloadImages">Download All</button>
 
 </div>
 </div>

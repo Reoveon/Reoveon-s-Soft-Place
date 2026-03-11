@@ -1,16 +1,28 @@
-let images = []
+let images=[]
 
-function showPage(id){
+document.addEventListener("DOMContentLoaded",()=>{
+
+/* SECTION NAVIGATION */
+
+document.querySelectorAll("nav button").forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+let page=btn.dataset.page
 
 document.querySelectorAll(".page").forEach(p=>{
 p.classList.remove("active")
 })
 
-document.getElementById(id).classList.add("active")
+document.getElementById(page).classList.add("active")
 
-}
+})
 
-function applyTheme(){
+})
+
+/* THEME */
+
+document.getElementById("applyTheme").addEventListener("click",()=>{
 
 let bg=document.getElementById("bgColor").value
 let text=document.getElementById("textColor").value
@@ -18,9 +30,11 @@ let text=document.getElementById("textColor").value
 document.body.style.backgroundColor=bg
 document.body.style.color=text
 
-}
+})
 
-function generateUsernames(){
+/* USERNAME GENERATOR */
+
+document.getElementById("generateNames").addEventListener("click",()=>{
 
 let len=parseInt(document.getElementById("nameLength").value)
 let count=parseInt(document.getElementById("nameCount").value)
@@ -43,11 +57,11 @@ output+=name+"<br>"
 
 document.getElementById("nameOutput").innerHTML=output
 
-}
+})
 
-document.addEventListener("DOMContentLoaded",()=>{
+/* IMAGE UPLOAD */
 
-document.getElementById("upload").addEventListener("change",function(e){
+document.getElementById("upload").addEventListener("change",e=>{
 
 let container=document.getElementById("imageContainer")
 container.innerHTML=""
@@ -57,11 +71,11 @@ Array.from(e.target.files).forEach(file=>{
 
 let reader=new FileReader()
 
-reader.onload=function(event){
+reader.onload=event=>{
 
 let img=new Image()
 
-img.onload=function(){
+img.onload=()=>{
 
 let canvas=document.createElement("canvas")
 let ctx=canvas.getContext("2d")
@@ -87,36 +101,29 @@ reader.readAsDataURL(file)
 
 })
 
-})
+/* REMOVE BACKGROUND */
 
-function hexToRgb(hex){
+document.getElementById("removeBG").addEventListener("click",()=>{
 
-return{
-r:parseInt(hex.substr(1,2),16),
-g:parseInt(hex.substr(3,2),16),
-b:parseInt(hex.substr(5,2),16)
-}
-
-}
-
-function removeBackground(){
-
-let color=hexToRgb(document.getElementById("removeColor").value)
+let hex=document.getElementById("removeColor").value
 let tol=document.getElementById("tolerance").value
+
+let r=parseInt(hex.substr(1,2),16)
+let g=parseInt(hex.substr(3,2),16)
+let b=parseInt(hex.substr(5,2),16)
 
 images.forEach(canvas=>{
 
 let ctx=canvas.getContext("2d")
-
 let img=ctx.getImageData(0,0,canvas.width,canvas.height)
 let data=img.data
 
 for(let i=0;i<data.length;i+=4){
 
 if(
-Math.abs(data[i]-color.r)<tol &&
-Math.abs(data[i+1]-color.g)<tol &&
-Math.abs(data[i+2]-color.b)<tol
+Math.abs(data[i]-r)<tol &&
+Math.abs(data[i+1]-g)<tol &&
+Math.abs(data[i+2]-b)<tol
 ){
 data[i+3]=0
 }
@@ -127,26 +134,30 @@ ctx.putImageData(img,0,0)
 
 })
 
-}
+})
 
-function clearCanvas(){
+/* CLEAR */
+
+document.getElementById("clearImages").addEventListener("click",()=>{
 
 document.getElementById("imageContainer").innerHTML=""
 images=[]
 
-}
+})
 
-function downloadAll(){
+/* DOWNLOAD */
+
+document.getElementById("downloadImages").addEventListener("click",()=>{
 
 images.forEach((canvas,i)=>{
 
 let link=document.createElement("a")
-
 link.download="image_"+i+".png"
 link.href=canvas.toDataURL()
-
 link.click()
 
 })
 
-}
+})
+
+})
