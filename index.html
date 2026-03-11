@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+
 <meta charset="UTF-8">
 <title>Reoveons Place</title>
 
@@ -10,7 +10,7 @@
 body{
 margin:0;
 font-family:Segoe UI;
-background:url("background.jpg") center/cover fixed;
+background:#0f0f0f;
 color:white;
 }
 
@@ -26,20 +26,20 @@ margin-left:10px;
 padding:10px 16px;
 border:none;
 border-radius:8px;
-background:rgba(0,0,0,0.6);
+background:#222;
 color:white;
 cursor:pointer;
-transition:.3s;
+transition:.2s;
 }
 
 nav button:hover{
-background:#00eaff;
+background:#00d9ff;
 color:black;
 }
 
 .page{
 display:none;
-padding:100px 30px;
+padding:90px 30px;
 }
 
 .active{
@@ -47,16 +47,18 @@ display:block;
 }
 
 .panel{
-background:rgba(0,0,0,.6);
+background:#1b1b1b;
 padding:25px;
-border-radius:12px;
-max-width:900px;
+border-radius:10px;
+max-width:1000px;
 margin:auto;
 }
 
 canvas{
 border:1px solid white;
-max-width:100%;
+margin-top:10px;
+max-width:300px;
+display:block;
 }
 
 input,button,select{
@@ -66,10 +68,10 @@ border-radius:6px;
 border:none;
 }
 
-audio{
-position:fixed;
-bottom:10px;
-left:10px;
+.imageRow{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
 }
 
 </style>
@@ -85,10 +87,6 @@ left:10px;
 <button onclick="showPage('bgremove')">BG Remover</button>
 <button onclick="showPage('tools')">Tools</button>
 </nav>
-
-<audio controls autoplay loop>
-<source src="music.mp3">
-</audio>
 
 <div id="home" class="page active">
 <div class="panel">
@@ -121,9 +119,12 @@ Text Color<br>
 Length<br>
 <input id="nameLength" type="number" value="10"><br>
 
-<button onclick="generateUsername()">Generate</button>
+How many usernames?<br>
+<input id="nameCount" type="number" value="5"><br><br>
 
-<h3 id="nameOutput"></h3>
+<button onclick="generateUsernames()">Generate</button>
+
+<div id="nameOutput"></div>
 
 </div>
 </div>
@@ -139,13 +140,9 @@ Color To Remove<br>
 Tolerance<br>
 <input type="range" min="10" max="150" value="60" id="tolerance"><br><br>
 
-<input type="file" id="upload"><br>
+<input type="file" id="upload" multiple><br><br>
 
-<h3>Original</h3>
-<canvas id="original"></canvas>
-
-<h3>Result</h3>
-<canvas id="result"></canvas>
+<div class="imageRow" id="imageContainer"></div>
 
 <br>
 
@@ -159,152 +156,13 @@ Tolerance<br>
 
 <h2>Tools</h2>
 
-<button onclick="clearCanvas()">Clear</button>
-<button onclick="downloadImage()">Download</button>
+<button onclick="clearCanvas()">Clear Images</button>
+<button onclick="downloadAll()">Download All</button>
 
 </div>
 </div>
 
-<script>
-
-let uploadedImage=null
-
-function showPage(id){
-
-document.querySelectorAll(".page").forEach(p=>{
-p.classList.remove("active")
-})
-
-document.getElementById(id).classList.add("active")
-
-}
-
-function applyTheme(){
-
-let bg=document.getElementById("bgColor").value
-let text=document.getElementById("textColor").value
-
-document.body.style.backgroundColor=bg
-document.body.style.color=text
-
-}
-
-function generateUsername(){
-
-let len=document.getElementById("nameLength").value
-
-let chars="abcdefghijklmnopqrstuvwxyz0123456789"
-
-let name=""
-
-for(let i=0;i<len;i++){
-
-name+=chars[Math.floor(Math.random()*chars.length)]
-
-}
-
-document.getElementById("nameOutput").innerText=name
-
-}
-
-document.getElementById("upload").addEventListener("change",function(e){
-
-let reader=new FileReader()
-
-reader.onload=function(event){
-
-let img=new Image()
-
-img.onload=function(){
-
-uploadedImage=img
-
-let c=document.getElementById("original")
-let ctx=c.getContext("2d")
-
-c.width=img.width
-c.height=img.height
-
-ctx.drawImage(img,0,0)
-
-}
-
-img.src=event.target.result
-
-}
-
-reader.readAsDataURL(e.target.files[0])
-
-})
-
-function hexToRgb(hex){
-
-return{
-r:parseInt(hex.substr(1,2),16),
-g:parseInt(hex.substr(3,2),16),
-b:parseInt(hex.substr(5,2),16)
-}
-
-}
-
-function removeBackground(){
-
-if(!uploadedImage) return
-
-let color=hexToRgb(document.getElementById("removeColor").value)
-let tol=document.getElementById("tolerance").value
-
-let c=document.getElementById("result")
-let ctx=c.getContext("2d")
-
-c.width=uploadedImage.width
-c.height=uploadedImage.height
-
-ctx.drawImage(uploadedImage,0,0)
-
-let img=ctx.getImageData(0,0,c.width,c.height)
-let d=img.data
-
-for(let i=0;i<d.length;i+=4){
-
-if(
-Math.abs(d[i]-color.r)<tol &&
-Math.abs(d[i+1]-color.g)<tol &&
-Math.abs(d[i+2]-color.b)<tol
-){
-d[i+3]=0
-}
-
-}
-
-ctx.putImageData(img,0,0)
-
-}
-
-function clearCanvas(){
-
-let o=document.getElementById("original")
-let r=document.getElementById("result")
-
-o.getContext("2d").clearRect(0,0,o.width,o.height)
-r.getContext("2d").clearRect(0,0,r.width,r.height)
-
-}
-
-function downloadImage(){
-
-let canvas=document.getElementById("result")
-
-let link=document.createElement("a")
-
-link.download="reoveons-image.png"
-link.href=canvas.toDataURL()
-
-link.click()
-
-}
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>

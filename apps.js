@@ -1,74 +1,93 @@
-let uploadedImage = null;
+let images = []
 
 function showPage(id){
 
-document.querySelectorAll(".page").forEach(page=>{
-page.classList.remove("active")
-});
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active")
+})
 
-document.getElementById(id).classList.add("active");
+document.getElementById(id).classList.add("active")
 
 }
 
 function applyTheme(){
 
-let bg = document.getElementById("bgColor").value;
-let text = document.getElementById("textColor").value;
+let bg=document.getElementById("bgColor").value
+let text=document.getElementById("textColor").value
 
-document.body.style.backgroundColor = bg;
-document.body.style.color = text;
+document.body.style.backgroundColor=bg
+document.body.style.color=text
 
 }
 
-function generateUsername(){
+function generateUsernames(){
 
-let len = document.getElementById("nameLength").value;
+let len=parseInt(document.getElementById("nameLength").value)
+let count=parseInt(document.getElementById("nameCount").value)
 
-let chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+let chars="abcdefghijklmnopqrstuvwxyz0123456789"
 
-let name = "";
+let output=""
+
+for(let c=0;c<count;c++){
+
+let name=""
 
 for(let i=0;i<len;i++){
-name += chars[Math.floor(Math.random()*chars.length)];
+name+=chars[Math.floor(Math.random()*chars.length)]
 }
 
-document.getElementById("nameOutput").innerText = name;
+output+=name+"<br>"
 
 }
 
-document.addEventListener("DOMContentLoaded", function(){
+document.getElementById("nameOutput").innerHTML=output
 
-document.getElementById("upload").addEventListener("change", function(e){
+}
 
-let reader = new FileReader();
+document.addEventListener("DOMContentLoaded",()=>{
 
-reader.onload = function(event){
+document.getElementById("upload").addEventListener("change",function(e){
 
-let img = new Image();
+let container=document.getElementById("imageContainer")
+container.innerHTML=""
+images=[]
 
-img.onload = function(){
+Array.from(e.target.files).forEach(file=>{
 
-uploadedImage = img;
+let reader=new FileReader()
 
-let canvas = document.getElementById("original");
-let ctx = canvas.getContext("2d");
+reader.onload=function(event){
 
-canvas.width = img.width;
-canvas.height = img.height;
+let img=new Image()
 
-ctx.drawImage(img,0,0);
+img.onload=function(){
 
-};
+let canvas=document.createElement("canvas")
+let ctx=canvas.getContext("2d")
 
-img.src = event.target.result;
+canvas.width=img.width
+canvas.height=img.height
 
-};
+ctx.drawImage(img,0,0)
 
-reader.readAsDataURL(e.target.files[0]);
+container.appendChild(canvas)
 
-});
+images.push(canvas)
 
-});
+}
+
+img.src=event.target.result
+
+}
+
+reader.readAsDataURL(file)
+
+})
+
+})
+
+})
 
 function hexToRgb(hex){
 
@@ -76,62 +95,58 @@ return{
 r:parseInt(hex.substr(1,2),16),
 g:parseInt(hex.substr(3,2),16),
 b:parseInt(hex.substr(5,2),16)
-};
+}
 
 }
 
 function removeBackground(){
 
-if(!uploadedImage) return;
+let color=hexToRgb(document.getElementById("removeColor").value)
+let tol=document.getElementById("tolerance").value
 
-let color = hexToRgb(document.getElementById("removeColor").value);
-let tol = document.getElementById("tolerance").value;
+images.forEach(canvas=>{
 
-let canvas = document.getElementById("result");
-let ctx = canvas.getContext("2d");
+let ctx=canvas.getContext("2d")
 
-canvas.width = uploadedImage.width;
-canvas.height = uploadedImage.height;
-
-ctx.drawImage(uploadedImage,0,0);
-
-let img = ctx.getImageData(0,0,canvas.width,canvas.height);
-let data = img.data;
+let img=ctx.getImageData(0,0,canvas.width,canvas.height)
+let data=img.data
 
 for(let i=0;i<data.length;i+=4){
 
 if(
-Math.abs(data[i]-color.r) < tol &&
-Math.abs(data[i+1]-color.g) < tol &&
-Math.abs(data[i+2]-color.b) < tol
+Math.abs(data[i]-color.r)<tol &&
+Math.abs(data[i+1]-color.g)<tol &&
+Math.abs(data[i+2]-color.b)<tol
 ){
-data[i+3] = 0;
+data[i+3]=0
 }
 
 }
 
-ctx.putImageData(img,0,0);
+ctx.putImageData(img,0,0)
+
+})
 
 }
 
 function clearCanvas(){
 
-let o = document.getElementById("original");
-let r = document.getElementById("result");
-
-o.getContext("2d").clearRect(0,0,o.width,o.height);
-r.getContext("2d").clearRect(0,0,r.width,r.height);
+document.getElementById("imageContainer").innerHTML=""
+images=[]
 
 }
 
-function downloadImage(){
+function downloadAll(){
 
-let canvas = document.getElementById("result");
+images.forEach((canvas,i)=>{
 
-let link = document.createElement("a");
-link.download = "reoveons-image.png";
-link.href = canvas.toDataURL();
+let link=document.createElement("a")
 
-link.click();
+link.download="image_"+i+".png"
+link.href=canvas.toDataURL()
+
+link.click()
+
+})
 
 }
