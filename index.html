@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -19,7 +20,7 @@ nav{
 position:fixed;
 top:15px;
 right:20px;
-z-index:999;
+z-index:1000;
 }
 
 nav button{
@@ -42,7 +43,7 @@ transform:scale(1.05);
 .page{
 display:none;
 padding:100px 30px;
-animation:fade .4s ease;
+animation:fade .35s ease;
 }
 
 .active{
@@ -63,26 +64,24 @@ max-width:900px;
 margin:auto;
 }
 
-h1{
-text-align:center;
-font-size:40px;
-}
-
 canvas{
 border:1px solid white;
 margin-top:10px;
 max-width:100%;
 }
 
-input,button{
+input,button,select{
 margin-top:8px;
 padding:8px;
 border-radius:6px;
 border:none;
 }
 
-.slider{
-width:200px;
+audio{
+position:fixed;
+bottom:10px;
+left:10px;
+z-index:500;
 }
 
 </style>
@@ -99,33 +98,28 @@ width:200px;
 <button onclick="showPage('tools')">Tools</button>
 </nav>
 
-<audio autoplay loop>
+<audio controls autoplay loop>
 <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <div id="home" class="page active">
-
 <div class="panel">
 <h1>Reoveons Place</h1>
 <p>Ultimate Tool Hub</p>
 </div>
-
 </div>
 
 <div id="themes" class="page">
-
 <div class="panel">
 
 <h2>Theme Engine</h2>
 
-Background Color
-<br>
+Background Color<br>
 <input type="color" id="bgColor">
 
 <br>
 
-Text Color
-<br>
+Text Color<br>
 <input type="color" id="textColor">
 
 <br><br>
@@ -134,23 +128,19 @@ Text Color
 <button onclick="resetTheme()">Reset</button>
 
 </div>
-
 </div>
 
 <div id="username" class="page">
-
 <div class="panel">
 
 <h2>Username Generator</h2>
 
-Length
-<br>
+Length<br>
 <input id="nameLength" type="number" value="10">
 
 <br>
 
-Style
-<br>
+Style<br>
 <select id="nameStyle">
 <option value="random">Random</option>
 <option value="gamer">Gamer</option>
@@ -164,24 +154,20 @@ Style
 <h3 id="nameOutput"></h3>
 
 </div>
-
 </div>
 
 <div id="bgremove" class="page">
-
 <div class="panel">
 
 <h2>Background Remover</h2>
 
-Color to remove
-<br>
+Color to remove<br>
 <input type="color" id="removeColor">
 
 <br>
 
-Tolerance
-<br>
-<input type="range" min="10" max="150" value="60" id="tolerance" class="slider">
+Tolerance<br>
+<input type="range" min="10" max="150" value="60" id="tolerance">
 
 <br><br>
 
@@ -198,23 +184,18 @@ Tolerance
 <button onclick="removeBackground()">Remove Background</button>
 
 </div>
-
 </div>
 
 <div id="tools" class="page">
-
 <div class="panel">
 
 <h2>Toolbox</h2>
 
 <button onclick="downloadImage()">Download Image</button>
-
 <button onclick="clearCanvas()">Clear Canvas</button>
-
 <button onclick="randomTheme()">Random Theme</button>
 
 </div>
-
 </div>
 
 <script src="app.js"></script>

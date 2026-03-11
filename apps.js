@@ -1,197 +1,183 @@
-/* DARK MODE */
+let uploadedImage = null
 
-function toggleDark(){
-document.body.classList.toggle("dark")
-}
+function showPage(id){
 
-/* MUSIC */
-
-const music=document.getElementById("music")
-
-function toggleMusic(){
-if(music.paused){
-music.play()
-}else{
-music.pause()
-}
-}
-
-document.getElementById("volume").addEventListener("input",e=>{
-music.volume=e.target.value
+document.querySelectorAll(".page").forEach(page=>{
+page.classList.remove("active")
 })
 
-/* PARTICLES */
+document.getElementById(id).classList.add("active")
 
-const bg=document.getElementById("bgParticles")
-const ctx=bg.getContext("2d")
-
-bg.width=window.innerWidth
-bg.height=window.innerHeight
-
-let particles=[]
-
-for(let i=0;i<80;i++){
-particles.push({
-x:Math.random()*bg.width,
-y:Math.random()*bg.height,
-size:Math.random()*3,
-speed:Math.random()*0.4
-})
 }
 
-function animate(){
+function applyTheme(){
 
-ctx.clearRect(0,0,bg.width,bg.height)
+let bg=document.getElementById("bgColor").value
+let text=document.getElementById("textColor").value
 
-particles.forEach(p=>{
+document.body.style.backgroundColor=bg
+document.body.style.color=text
 
-p.y-=p.speed
+localStorage.setItem("bg",bg)
+localStorage.setItem("text",text)
 
-if(p.y<0){
-p.y=bg.height
 }
 
-ctx.beginPath()
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-ctx.fill()
+function resetTheme(){
 
-})
+document.body.style.backgroundColor=""
+document.body.style.color="white"
 
-requestAnimationFrame(animate)
+localStorage.removeItem("bg")
+localStorage.removeItem("text")
+
 }
 
-animate()
+function randomTheme(){
 
-/* DRAG DROP */
+let r=()=>Math.floor(Math.random()*255)
 
-const dropZone=document.getElementById("dropZone")
-const upload=document.getElementById("imageUpload")
+let color=`rgb(${r()},${r()},${r()})`
 
-dropZone.onclick=()=>upload.click()
+document.body.style.backgroundColor=color
 
-dropZone.addEventListener("dragover",e=>{
-e.preventDefault()
-dropZone.classList.add("drag")
-})
+}
 
-dropZone.addEventListener("dragleave",()=>{
-dropZone.classList.remove("drag")
-})
+window.onload=()=>{
 
-dropZone.addEventListener("drop",e=>{
-e.preventDefault()
-dropZone.classList.remove("drag")
-upload.files=e.dataTransfer.files
-})
+let bg=localStorage.getItem("bg")
+let text=localStorage.getItem("text")
 
-/* BACKGROUND REMOVER */
+if(bg) document.body.style.backgroundColor=bg
+if(text) document.body.style.color=text
 
-function removeBackground(){
+}
 
-const files=upload.files
-const container=document.getElementById("imageContainer")
-const color=document.getElementById("removeColor").value
+function generateUsername(){
 
-container.innerHTML=""
+let len=document.getElementById("nameLength").value
+let style=document.getElementById("nameStyle").value
 
-const r=parseInt(color.substr(1,2),16)
-const g=parseInt(color.substr(3,2),16)
-const b=parseInt(color.substr(5,2),16)
+let chars="abcdefghijklmnopqrstuvwxyz0123456789"
+let name=""
 
-Array.from(files).forEach(file=>{
+if(style==="random"){
 
-const img=new Image()
-img.src=URL.createObjectURL(file)
+for(let i=0;i<len;i++)
+name+=chars[Math.floor(Math.random()*chars.length)]
 
-img.onload=function(){
+}
 
-const canvas=document.createElement("canvas")
-const ctx=canvas.getContext("2d")
+if(style==="gamer"){
 
-canvas.width=img.width
-canvas.height=img.height
+let words=["Shadow","Nova","Ghost","Reaper","Pixel","Storm"]
+name=words[Math.floor(Math.random()*words.length)]+Math.floor(Math.random()*9999)
+
+}
+
+if(style==="cool"){
+
+let words=["Vortex","Cipher","Phantom","Neon","Blaze"]
+name=words[Math.floor(Math.random()*words.length)]
+
+}
+
+document.getElementById("nameOutput").innerText=name
+
+}
+
+document.getElementById("upload").addEventListener("change",e=>{
+
+let reader=new FileReader()
+
+reader.onload=event=>{
+
+let img=new Image()
+
+img.onload=()=>{
+
+uploadedImage=img
+
+let c=document.getElementById("original")
+let ctx=c.getContext("2d")
+
+c.width=img.width
+c.height=img.height
 
 ctx.drawImage(img,0,0)
 
-let data=ctx.getImageData(0,0,canvas.width,canvas.height)
-let pixels=data.data
-
-for(let i=0;i<pixels.length;i+=4){
-
-let dr=pixels[i]-r
-let dg=pixels[i+1]-g
-let db=pixels[i+2]-b
-
-let dist=Math.sqrt(dr*dr+dg*dg+db*db)
-
-if(dist<80){
-pixels[i+3]=0
 }
+
+img.src=event.target.result
 
 }
 
-ctx.putImageData(data,0,0)
-
-let link=document.createElement("a")
-link.href=canvas.toDataURL("image/png")
-link.download="removed.png"
-link.innerText="Download Image"
-
-container.appendChild(canvas)
-container.appendChild(link)
-
-}
+reader.readAsDataURL(e.target.files[0])
 
 })
 
+function hexToRgb(hex){
+
+return{
+r:parseInt(hex.substr(1,2),16),
+g:parseInt(hex.substr(3,2),16),
+b:parseInt(hex.substr(5,2),16)
 }
 
-/* FONT LOADER */
-
-let loadedFont=null
-
-document.getElementById("fontUpload").addEventListener("change",async e=>{
-
-const file=e.target.files[0]
-if(!file)return
-
-const font=new FontFace("customFont",file)
-
-await font.load()
-document.fonts.add(font)
-
-loadedFont="customFont"
-
-})
-
-function renderFont(){
-
-const text=document.getElementById("fontText").value
-const canvas=document.getElementById("fontCanvas")
-const ctx=canvas.getContext("2d")
-
-canvas.width=800
-canvas.height=200
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-ctx.textAlign="center"
-ctx.textBaseline="middle"
-ctx.fillStyle="#000"
-
-if(loadedFont){
-ctx.font="60px "+loadedFont
-}else{
-ctx.font="60px sans-serif"
 }
 
-ctx.fillText(text,canvas.width/2,canvas.height/2)
+function removeBackground(){
+
+if(!uploadedImage) return
+
+let color=hexToRgb(document.getElementById("removeColor").value)
+let tol=document.getElementById("tolerance").value
+
+let c=document.getElementById("result")
+let ctx=c.getContext("2d")
+
+c.width=uploadedImage.width
+c.height=uploadedImage.height
+
+ctx.drawImage(uploadedImage,0,0)
+
+let img=ctx.getImageData(0,0,c.width,c.height)
+let d=img.data
+
+for(let i=0;i<d.length;i+=4){
+
+if(
+Math.abs(d[i]-color.r)<tol &&
+Math.abs(d[i+1]-color.g)<tol &&
+Math.abs(d[i+2]-color.b)<tol
+){
+d[i+3]=0
+}
+
+}
+
+ctx.putImageData(img,0,0)
+
+}
+
+function clearCanvas(){
+
+let o=document.getElementById("original")
+let r=document.getElementById("result")
+
+o.getContext("2d").clearRect(0,0,o.width,o.height)
+r.getContext("2d").clearRect(0,0,r.width,r.height)
+
+}
+
+function downloadImage(){
+
+let canvas=document.getElementById("result")
 
 let link=document.createElement("a")
-link.href=canvas.toDataURL("image/png")
-link.download="text.png"
-link.innerText="Download Text"
+link.download="reoveons-image.png"
+link.href=canvas.toDataURL()
 
-canvas.parentElement.appendChild(link)
+link.click()
 
 }
