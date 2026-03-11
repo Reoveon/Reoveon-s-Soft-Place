@@ -1,5 +1,3 @@
-/* tabs */
-
 function switchTab(tab){
 
 document.querySelectorAll(".tab").forEach(t=>{
@@ -10,12 +8,11 @@ document.getElementById(tab).classList.add("active")
 
 }
 
+
 /* dark mode */
 
 function toggleDark(){
-
 document.body.classList.toggle("dark")
-
 }
 
 
@@ -26,23 +23,15 @@ const music=document.getElementById("music")
 function toggleMusic(){
 
 if(music.paused){
-
 music.play()
-
 }else{
-
 music.pause()
-
 }
 
 }
-
-/* volume */
 
 document.getElementById("volume").addEventListener("input",e=>{
-
 music.volume=e.target.value
-
 })
 
 
@@ -59,12 +48,10 @@ let particles=[]
 for(let i=0;i<90;i++){
 
 particles.push({
-
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*3,
 speed:Math.random()*0.5
-
 })
 
 }
@@ -80,10 +67,8 @@ particles.forEach(p=>{
 p.y-=p.speed
 
 if(p.y<0){
-
 p.y=canvas.height
 p.x=Math.random()*canvas.width
-
 }
 
 ctx.beginPath()
@@ -97,3 +82,31 @@ requestAnimationFrame(animate)
 }
 
 animate()
+
+
+/* username generator */
+
+function generateUsernames(){
+
+const length=document.getElementById("charLength").value
+const amount=document.getElementById("userAmount").value
+
+const chars="abcdefghijklmnopqrstuvwxyz"
+
+let output=""
+
+for(let i=0;i<amount;i++){
+
+let name=""
+
+for(let j=0;j<length;j++){
+name+=chars[Math.floor(Math.random()*chars.length)]
+}
+
+output+=name+"<br>"
+
+}
+
+document.getElementById("usernameList").innerHTML=output
+
+}

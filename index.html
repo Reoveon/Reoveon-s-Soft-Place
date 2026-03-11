@@ -18,10 +18,14 @@
 <h2>🌸 Reoveons Soft Place</h2>
 
 <nav>
+
 <button onclick="switchTab('home')">Home</button>
-<button onclick="switchTab('tools')">Tools</button>
+<button onclick="switchTab('remover')">Background Remover</button>
+<button onclick="switchTab('username')">Username Gen</button>
+<button onclick="switchTab('font')">Font Loader</button>
 <button onclick="switchTab('socials')">Socials</button>
 <button onclick="toggleDark()">🌙</button>
+
 </nav>
 
 </header>
@@ -29,35 +33,97 @@
 
 <main>
 
+<!-- HOME -->
+
 <section id="home" class="tab active">
 
 <div class="card">
 
 <h1>reoveon</h1>
-
 <p>"soft spaces create soft minds"</p>
-
-<p>welcome to my cozy corner of the internet</p>
+<p>welcome to my cozy place on the internet</p>
 
 </div>
 
 </section>
 
 
-<section id="tools" class="tab">
+<!-- BACKGROUND REMOVER -->
+
+<section id="remover" class="tab">
 
 <div class="card">
 
-<h2>Tools</h2>
+<h2>Background Remover</h2>
 
-<p>background remover</p>
-<p>username generator</p>
-<p>font loader</p>
+<input type="file" id="imageUpload" multiple>
+
+<br><br>
+
+<input type="color" id="removeColor" value="#ffffff">
+
+<button onclick="removeBackground()">Remove</button>
+
+<div id="imageContainer"></div>
 
 </div>
 
 </section>
 
+
+<!-- USERNAME GENERATOR -->
+
+<section id="username" class="tab">
+
+<div class="card">
+
+<h2>Username Generator</h2>
+
+<label>Length</label>
+<input type="number" id="charLength" min="1" max="10" value="5">
+
+<br><br>
+
+<label>Amount</label>
+<input type="number" id="userAmount" min="1" max="100" value="10">
+
+<br><br>
+
+<button onclick="generateUsernames()">Generate</button>
+
+<div id="usernameList"></div>
+
+</div>
+
+</section>
+
+
+<!-- FONT LOADER -->
+
+<section id="font" class="tab">
+
+<div class="card">
+
+<h2>Font Loader</h2>
+
+<input type="file" id="fontUpload" accept=".ttf,.otf">
+
+<br><br>
+
+<input type="text" id="fontText" placeholder="Type text">
+
+<br><br>
+
+<button onclick="renderFont()">Render</button>
+
+<canvas id="fontCanvas"></canvas>
+
+</div>
+
+</section>
+
+
+<!-- SOCIALS -->
 
 <section id="socials" class="tab">
 
@@ -91,7 +157,6 @@
 <input type="range" min="0" max="1" step="0.01" value="0.5" id="volume">
 
 </div>
-
 
 <audio id="music" loop>
 <source src="music.mp3">
