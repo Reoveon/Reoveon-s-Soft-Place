@@ -1,55 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cozy Toolkit</title>
-<link rel="stylesheet" href="style.css">
+<title>Reoveons Place</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+background:url("background.jpg") center/cover fixed;
+color:white;
+overflow-x:hidden;
+}
+
+nav{
+position:fixed;
+top:15px;
+right:20px;
+z-index:999;
+}
+
+nav button{
+margin-left:10px;
+padding:10px 16px;
+border:none;
+border-radius:8px;
+background:rgba(0,0,0,0.6);
+color:white;
+cursor:pointer;
+transition:.3s;
+}
+
+nav button:hover{
+background:#00eaff;
+color:black;
+transform:scale(1.05);
+}
+
+.page{
+display:none;
+padding:100px 30px;
+animation:fade .4s ease;
+}
+
+.active{
+display:block;
+}
+
+@keyframes fade{
+from{opacity:0; transform:translateY(10px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+.panel{
+background:rgba(0,0,0,.55);
+padding:25px;
+border-radius:12px;
+backdrop-filter:blur(10px);
+max-width:900px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+font-size:40px;
+}
+
+canvas{
+border:1px solid white;
+margin-top:10px;
+max-width:100%;
+}
+
+input,button{
+margin-top:8px;
+padding:8px;
+border-radius:6px;
+border:none;
+}
+
+.slider{
+width:200px;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<canvas id="bgParticles"></canvas>
+<nav>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('themes')">Themes</button>
+<button onclick="showPage('username')">Username</button>
+<button onclick="showPage('bgremove')">BG Remover</button>
+<button onclick="showPage('tools')">Tools</button>
+</nav>
 
-<header>
-<h1>Cozy Toolkit</h1>
-
-<div class="controls">
-<button onclick="toggleDark()">Dark Mode</button>
-<button onclick="toggleMusic()">Music</button>
-<input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
-</div>
-</header>
-
-<audio id="music" loop>
+<audio autoplay loop>
 <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<div class="container">
+<div id="home" class="page active">
 
-<h2>Background Remover</h2>
-
-<div id="dropZone">Drag & Drop Images Here or Click</div>
-<input type="file" id="imageUpload" multiple hidden>
-
-<label>Color To Remove</label>
-<input type="color" id="removeColor" value="#ffffff">
-
-<button onclick="removeBackground()">Remove Background</button>
-
-<div id="imageContainer"></div>
-
-<h2>Font Image Generator</h2>
-
-<input type="file" id="fontUpload" accept=".ttf,.otf">
-<input type="text" id="fontText" placeholder="Type text here">
-
-<button onclick="renderFont()">Render Text</button>
-
-<canvas id="fontCanvas"></canvas>
+<div class="panel">
+<h1>Reoveons Place</h1>
+<p>Ultimate Tool Hub</p>
+</div>
 
 </div>
 
-<script src="script.js"></script>
+<div id="themes" class="page">
+
+<div class="panel">
+
+<h2>Theme Engine</h2>
+
+Background Color
+<br>
+<input type="color" id="bgColor">
+
+<br>
+
+Text Color
+<br>
+<input type="color" id="textColor">
+
+<br><br>
+
+<button onclick="applyTheme()">Apply Theme</button>
+<button onclick="resetTheme()">Reset</button>
+
+</div>
+
+</div>
+
+<div id="username" class="page">
+
+<div class="panel">
+
+<h2>Username Generator</h2>
+
+Length
+<br>
+<input id="nameLength" type="number" value="10">
+
+<br>
+
+Style
+<br>
+<select id="nameStyle">
+<option value="random">Random</option>
+<option value="gamer">Gamer</option>
+<option value="cool">Cool</option>
+</select>
+
+<br><br>
+
+<button onclick="generateUsername()">Generate</button>
+
+<h3 id="nameOutput"></h3>
+
+</div>
+
+</div>
+
+<div id="bgremove" class="page">
+
+<div class="panel">
+
+<h2>Background Remover</h2>
+
+Color to remove
+<br>
+<input type="color" id="removeColor">
+
+<br>
+
+Tolerance
+<br>
+<input type="range" min="10" max="150" value="60" id="tolerance" class="slider">
+
+<br><br>
+
+<input type="file" id="upload">
+
+<h3>Original</h3>
+<canvas id="original"></canvas>
+
+<h3>Result</h3>
+<canvas id="result"></canvas>
+
+<br>
+
+<button onclick="removeBackground()">Remove Background</button>
+
+</div>
+
+</div>
+
+<div id="tools" class="page">
+
+<div class="panel">
+
+<h2>Toolbox</h2>
+
+<button onclick="downloadImage()">Download Image</button>
+
+<button onclick="clearCanvas()">Clear Canvas</button>
+
+<button onclick="randomTheme()">Random Theme</button>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
