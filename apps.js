@@ -1,183 +1,89 @@
-let uploadedImage = null
+// section switching
 
-function showPage(id){
+const buttons=document.querySelectorAll(".nav button[data-section]")
 
-document.querySelectorAll(".page").forEach(page=>{
-page.classList.remove("active")
+buttons.forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+const id=btn.dataset.section
+
+document.querySelectorAll(".panel").forEach(panel=>{
+panel.classList.remove("active")
 })
 
 document.getElementById(id).classList.add("active")
 
+})
+
+})
+
+
+// username generator
+
+function generateUsername(){
+
+const words=["Shadow","Pixel","Nova","Ghost","Cyber","Vortex","Echo"]
+const ends=["X","HD","77","Dev","TV","AI"]
+
+let name=words[Math.floor(Math.random()*words.length)]
+let end=ends[Math.floor(Math.random()*ends.length)]
+let num=Math.floor(Math.random()*999)
+
+document.getElementById("usernameOutput").innerText=name+end+num
+
 }
 
-function applyTheme(){
 
-let bg=document.getElementById("bgColor").value
-let text=document.getElementById("textColor").value
+// dev panel
 
-document.body.style.backgroundColor=bg
-document.body.style.color=text
+document.getElementById("devBtn").onclick=()=>{
 
-localStorage.setItem("bg",bg)
-localStorage.setItem("text",text)
+const panel=document.getElementById("devPanel")
+
+panel.style.display=panel.style.display==="block"?"none":"block"
 
 }
 
-function resetTheme(){
 
-document.body.style.backgroundColor=""
-document.body.style.color="white"
+// themes
 
-localStorage.removeItem("bg")
-localStorage.removeItem("text")
+function setTheme(theme){
+
+document.body.className=theme
 
 }
 
 function randomTheme(){
 
-let r=()=>Math.floor(Math.random()*255)
+const themes=["dark","neon","galaxy"]
 
-let color=`rgb(${r()},${r()},${r()})`
-
-document.body.style.backgroundColor=color
+setTheme(themes[Math.floor(Math.random()*themes.length)])
 
 }
 
-window.onload=()=>{
 
-let bg=localStorage.getItem("bg")
-let text=localStorage.getItem("text")
+// particles
 
-if(bg) document.body.style.backgroundColor=bg
-if(text) document.body.style.color=text
+function spawnParticles(){
 
-}
+for(let i=0;i<40;i++){
 
-function generateUsername(){
+const p=document.createElement("div")
 
-let len=document.getElementById("nameLength").value
-let style=document.getElementById("nameStyle").value
+p.style.position="absolute"
+p.style.width="3px"
+p.style.height="3px"
+p.style.background="white"
+p.style.borderRadius="50%"
 
-let chars="abcdefghijklmnopqrstuvwxyz0123456789"
-let name=""
+p.style.left=Math.random()*100+"vw"
+p.style.top=Math.random()*100+"vh"
 
-if(style==="random"){
+document.getElementById("particles").appendChild(p)
 
-for(let i=0;i<len;i++)
-name+=chars[Math.floor(Math.random()*chars.length)]
-
-}
-
-if(style==="gamer"){
-
-let words=["Shadow","Nova","Ghost","Reaper","Pixel","Storm"]
-name=words[Math.floor(Math.random()*words.length)]+Math.floor(Math.random()*9999)
-
-}
-
-if(style==="cool"){
-
-let words=["Vortex","Cipher","Phantom","Neon","Blaze"]
-name=words[Math.floor(Math.random()*words.length)]
-
-}
-
-document.getElementById("nameOutput").innerText=name
-
-}
-
-document.getElementById("upload").addEventListener("change",e=>{
-
-let reader=new FileReader()
-
-reader.onload=event=>{
-
-let img=new Image()
-
-img.onload=()=>{
-
-uploadedImage=img
-
-let c=document.getElementById("original")
-let ctx=c.getContext("2d")
-
-c.width=img.width
-c.height=img.height
-
-ctx.drawImage(img,0,0)
-
-}
-
-img.src=event.target.result
-
-}
-
-reader.readAsDataURL(e.target.files[0])
-
-})
-
-function hexToRgb(hex){
-
-return{
-r:parseInt(hex.substr(1,2),16),
-g:parseInt(hex.substr(3,2),16),
-b:parseInt(hex.substr(5,2),16)
 }
 
 }
 
-function removeBackground(){
-
-if(!uploadedImage) return
-
-let color=hexToRgb(document.getElementById("removeColor").value)
-let tol=document.getElementById("tolerance").value
-
-let c=document.getElementById("result")
-let ctx=c.getContext("2d")
-
-c.width=uploadedImage.width
-c.height=uploadedImage.height
-
-ctx.drawImage(uploadedImage,0,0)
-
-let img=ctx.getImageData(0,0,c.width,c.height)
-let d=img.data
-
-for(let i=0;i<d.length;i+=4){
-
-if(
-Math.abs(d[i]-color.r)<tol &&
-Math.abs(d[i+1]-color.g)<tol &&
-Math.abs(d[i+2]-color.b)<tol
-){
-d[i+3]=0
-}
-
-}
-
-ctx.putImageData(img,0,0)
-
-}
-
-function clearCanvas(){
-
-let o=document.getElementById("original")
-let r=document.getElementById("result")
-
-o.getContext("2d").clearRect(0,0,o.width,o.height)
-r.getContext("2d").clearRect(0,0,r.width,r.height)
-
-}
-
-function downloadImage(){
-
-let canvas=document.getElementById("result")
-
-let link=document.createElement("a")
-link.download="reoveons-image.png"
-link.href=canvas.toDataURL()
-
-link.click()
-
-}
+spawnParticles()

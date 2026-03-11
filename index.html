@@ -2,200 +2,94 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reoveons Place</title>
 
-<style>
-
-body{
-margin:0;
-font-family:Segoe UI;
-background:url("background.jpg") center/cover fixed;
-color:white;
-overflow-x:hidden;
-}
-
-nav{
-position:fixed;
-top:15px;
-right:20px;
-z-index:1000;
-}
-
-nav button{
-margin-left:10px;
-padding:10px 16px;
-border:none;
-border-radius:8px;
-background:rgba(0,0,0,0.6);
-color:white;
-cursor:pointer;
-transition:.3s;
-}
-
-nav button:hover{
-background:#00eaff;
-color:black;
-transform:scale(1.05);
-}
-
-.page{
-display:none;
-padding:100px 30px;
-animation:fade .35s ease;
-}
-
-.active{
-display:block;
-}
-
-@keyframes fade{
-from{opacity:0; transform:translateY(10px)}
-to{opacity:1; transform:translateY(0)}
-}
-
-.panel{
-background:rgba(0,0,0,.55);
-padding:25px;
-border-radius:12px;
-backdrop-filter:blur(10px);
-max-width:900px;
-margin:auto;
-}
-
-canvas{
-border:1px solid white;
-margin-top:10px;
-max-width:100%;
-}
-
-input,button,select{
-margin-top:8px;
-padding:8px;
-border-radius:6px;
-border:none;
-}
-
-audio{
-position:fixed;
-bottom:10px;
-left:10px;
-z-index:500;
-}
-
-</style>
+<link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
 
-<nav>
-<button onclick="showPage('home')">Home</button>
-<button onclick="showPage('themes')">Themes</button>
-<button onclick="showPage('username')">Username</button>
-<button onclick="showPage('bgremove')">BG Remover</button>
-<button onclick="showPage('tools')">Tools</button>
-</nav>
+<div id="particles"></div>
 
-<audio controls autoplay loop>
-<source src="music.mp3" type="audio/mpeg">
-</audio>
+<header>
 
-<div id="home" class="page active">
-<div class="panel">
 <h1>Reoveons Place</h1>
-<p>Ultimate Tool Hub</p>
-</div>
-</div>
 
-<div id="themes" class="page">
-<div class="panel">
+<div class="nav">
 
-<h2>Theme Engine</h2>
-
-Background Color<br>
-<input type="color" id="bgColor">
-
-<br>
-
-Text Color<br>
-<input type="color" id="textColor">
-
-<br><br>
-
-<button onclick="applyTheme()">Apply Theme</button>
-<button onclick="resetTheme()">Reset</button>
+<button data-section="tools">Tools</button>
+<button data-section="themes">Themes</button>
+<button data-section="profile">Profile</button>
+<button id="devBtn">⚡</button>
 
 </div>
-</div>
 
-<div id="username" class="page">
-<div class="panel">
+</header>
 
-<h2>Username Generator</h2>
+<main>
 
-Length<br>
-<input id="nameLength" type="number" value="10">
-
-<br>
-
-Style<br>
-<select id="nameStyle">
-<option value="random">Random</option>
-<option value="gamer">Gamer</option>
-<option value="cool">Cool</option>
-</select>
-
-<br><br>
-
-<button onclick="generateUsername()">Generate</button>
-
-<h3 id="nameOutput"></h3>
-
-</div>
-</div>
-
-<div id="bgremove" class="page">
-<div class="panel">
-
-<h2>Background Remover</h2>
-
-Color to remove<br>
-<input type="color" id="removeColor">
-
-<br>
-
-Tolerance<br>
-<input type="range" min="10" max="150" value="60" id="tolerance">
-
-<br><br>
-
-<input type="file" id="upload">
-
-<h3>Original</h3>
-<canvas id="original"></canvas>
-
-<h3>Result</h3>
-<canvas id="result"></canvas>
-
-<br>
-
-<button onclick="removeBackground()">Remove Background</button>
-
-</div>
-</div>
-
-<div id="tools" class="page">
-<div class="panel">
+<section id="tools" class="panel active">
 
 <h2>Toolbox</h2>
 
-<button onclick="downloadImage()">Download Image</button>
-<button onclick="clearCanvas()">Clear Canvas</button>
-<button onclick="randomTheme()">Random Theme</button>
+<div class="tool">
+<h3>AI Username Generator</h3>
+<button onclick="generateUsername()">Generate</button>
+<p id="usernameOutput"></p>
+</div>
+
+<div class="tool">
+
+<h3>Background Remover</h3>
+
+<input type="file" id="imageUpload">
+<input type="color" id="removeColor" value="#ffffff">
+<button onclick="removeBackground()">Remove Background</button>
+
+<div class="preview">
+<img id="originalPreview">
+<canvas id="canvas"></canvas>
+</div>
 
 </div>
+
+</section>
+
+<section id="themes" class="panel">
+
+<h2>Themes</h2>
+
+<button onclick="setTheme('dark')">Dark</button>
+<button onclick="setTheme('neon')">Neon</button>
+<button onclick="setTheme('galaxy')">Galaxy</button>
+
+</section>
+
+<section id="profile" class="panel">
+
+<h2>Profile</h2>
+
+<input id="profileName" placeholder="Username">
+<input type="file" id="profilePic">
+
+<div id="profileCard"></div>
+
+<button onclick="saveProfile()">Save</button>
+
+</section>
+
+</main>
+
+<div id="devPanel">
+
+<h3>Developer Panel</h3>
+
+<button onclick="spawnParticles()">More Particles</button>
+<button onclick="randomTheme()">Random Theme</button>
+
 </div>
 
 <script src="app.js"></script>
