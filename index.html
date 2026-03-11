@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Reoveons Place</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+background:url("background.jpg") center/cover fixed;
+color:white;
+}
+
+nav{
+position:fixed;
+top:15px;
+right:20px;
+z-index:1000;
+}
+
+nav button{
+margin-left:10px;
+padding:10px 16px;
+border:none;
+border-radius:8px;
+background:rgba(0,0,0,0.6);
+color:white;
+cursor:pointer;
+transition:.3s;
+}
+
+nav button:hover{
+background:#00eaff;
+color:black;
+}
+
+.page{
+display:none;
+padding:100px 30px;
+}
+
+.active{
+display:block;
+}
+
+.panel{
+background:rgba(0,0,0,.6);
+padding:25px;
+border-radius:12px;
+max-width:900px;
+margin:auto;
+}
+
+canvas{
+border:1px solid white;
+max-width:100%;
+}
+
+input,button,select{
+margin-top:8px;
+padding:8px;
+border-radius:6px;
+border:none;
+}
+
+audio{
+position:fixed;
+bottom:10px;
+left:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('themes')">Themes</button>
+<button onclick="showPage('username')">Username</button>
+<button onclick="showPage('bgremove')">BG Remover</button>
+<button onclick="showPage('tools')">Tools</button>
+</nav>
+
+<audio controls autoplay loop>
+<source src="music.mp3">
+</audio>
+
+<div id="home" class="page active">
+<div class="panel">
+<h1>Reoveons Place</h1>
+<p>Ultimate Tool Hub</p>
+</div>
+</div>
+
+<div id="themes" class="page">
+<div class="panel">
+
+<h2>Themes</h2>
+
+Background Color<br>
+<input type="color" id="bgColor"><br>
+
+Text Color<br>
+<input type="color" id="textColor"><br><br>
+
+<button onclick="applyTheme()">Apply Theme</button>
+
+</div>
+</div>
+
+<div id="username" class="page">
+<div class="panel">
+
+<h2>Username Generator</h2>
+
+Length<br>
+<input id="nameLength" type="number" value="10"><br>
+
+<button onclick="generateUsername()">Generate</button>
+
+<h3 id="nameOutput"></h3>
+
+</div>
+</div>
+
+<div id="bgremove" class="page">
+<div class="panel">
+
+<h2>Background Remover</h2>
+
+Color To Remove<br>
+<input type="color" id="removeColor"><br>
+
+Tolerance<br>
+<input type="range" min="10" max="150" value="60" id="tolerance"><br><br>
+
+<input type="file" id="upload"><br>
+
+<h3>Original</h3>
+<canvas id="original"></canvas>
+
+<h3>Result</h3>
+<canvas id="result"></canvas>
+
+<br>
+
+<button onclick="removeBackground()">Remove Background</button>
+
+</div>
+</div>
+
+<div id="tools" class="page">
+<div class="panel">
+
+<h2>Tools</h2>
+
+<button onclick="clearCanvas()">Clear</button>
+<button onclick="downloadImage()">Download</button>
+
+</div>
+</div>
+
+<script>
+
+let uploadedImage=null
+
+function showPage(id){
+
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active")
+})
+
+document.getElementById(id).classList.add("active")
+
+}
+
+function applyTheme(){
+
+let bg=document.getElementById("bgColor").value
+let text=document.getElementById("textColor").value
+
+document.body.style.backgroundColor=bg
+document.body.style.color=text
+
+}
+
+function generateUsername(){
+
+let len=document.getElementById("nameLength").value
+
+let chars="abcdefghijklmnopqrstuvwxyz0123456789"
+
+let name=""
+
+for(let i=0;i<len;i++){
+
+name+=chars[Math.floor(Math.random()*chars.length)]
+
+}
+
+document.getElementById("nameOutput").innerText=name
+
+}
+
+document.getElementById("upload").addEventListener("change",function(e){
+
+let reader=new FileReader()
+
+reader.onload=function(event){
+
+let img=new Image()
+
+img.onload=function(){
+
+uploadedImage=img
+
+let c=document.getElementById("original")
+let ctx=c.getContext("2d")
+
+c.width=img.width
+c.height=img.height
+
+ctx.drawImage(img,0,0)
+
+}
+
+img.src=event.target.result
+
+}
+
+reader.readAsDataURL(e.target.files[0])
+
+})
+
+function hexToRgb(hex){
+
+return{
+r:parseInt(hex.substr(1,2),16),
+g:parseInt(hex.substr(3,2),16),
+b:parseInt(hex.substr(5,2),16)
+}
+
+}
+
+function removeBackground(){
+
+if(!uploadedImage) return
+
+let color=hexToRgb(document.getElementById("removeColor").value)
+let tol=document.getElementById("tolerance").value
+
+let c=document.getElementById("result")
+let ctx=c.getContext("2d")
+
+c.width=uploadedImage.width
+c.height=uploadedImage.height
+
+ctx.drawImage(uploadedImage,0,0)
+
+let img=ctx.getImageData(0,0,c.width,c.height)
+let d=img.data
+
+for(let i=0;i<d.length;i+=4){
+
+if(
+Math.abs(d[i]-color.r)<tol &&
+Math.abs(d[i+1]-color.g)<tol &&
+Math.abs(d[i+2]-color.b)<tol
+){
+d[i+3]=0
+}
+
+}
+
+ctx.putImageData(img,0,0)
+
+}
+
+function clearCanvas(){
+
+let o=document.getElementById("original")
+let r=document.getElementById("result")
+
+o.getContext("2d").clearRect(0,0,o.width,o.height)
+r.getContext("2d").clearRect(0,0,r.width,r.height)
+
+}
+
+function downloadImage(){
+
+let canvas=document.getElementById("result")
+
+let link=document.createElement("a")
+
+link.download="reoveons-image.png"
+link.href=canvas.toDataURL()
+
+link.click()
+
+}
+
+</script>
+
+</body>
+</html>
