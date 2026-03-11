@@ -1,4 +1,4 @@
-/* tab switching */
+/* tabs */
 
 function switchTab(tab){
 
@@ -10,7 +10,6 @@ document.getElementById(tab).classList.add("active")
 
 }
 
-
 /* dark mode */
 
 function toggleDark(){
@@ -18,6 +17,33 @@ function toggleDark(){
 document.body.classList.toggle("dark")
 
 }
+
+
+/* music */
+
+const music=document.getElementById("music")
+
+function toggleMusic(){
+
+if(music.paused){
+
+music.play()
+
+}else{
+
+music.pause()
+
+}
+
+}
+
+/* volume */
+
+document.getElementById("volume").addEventListener("input",e=>{
+
+music.volume=e.target.value
+
+})
 
 
 /* particles */
@@ -30,8 +56,6 @@ canvas.height=window.innerHeight
 
 let particles=[]
 
-/* medium amount */
-
 for(let i=0;i<90;i++){
 
 particles.push({
@@ -39,12 +63,11 @@ particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*3,
-speed:Math.random()*0.6
+speed:Math.random()*0.5
 
 })
 
 }
-
 
 function animate(){
 
