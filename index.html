@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Reoveons Place</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#111;
+color:white;
+}
+
+nav{
+position:fixed;
+top:10px;
+right:10px;
+}
+
+nav button{
+margin-left:5px;
+padding:8px 14px;
+background:#222;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+nav button:hover{
+background:#00c8ff;
+color:black;
+}
+
+.page{
+display:none;
+padding:80px 20px;
+}
+
+.page.active{
+display:block;
+}
+
+.panel{
+background:#1c1c1c;
+padding:20px;
+border-radius:10px;
+max-width:900px;
+margin:auto;
+}
+
+canvas{
+border:1px solid white;
+max-width:250px;
+display:block;
+margin-top:10px;
+}
+
+.imageRow{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('themes')">Themes</button>
+<button onclick="showPage('username')">Username</button>
+<button onclick="showPage('bgremove')">BG Remover</button>
+<button onclick="showPage('tools')">Tools</button>
+
+</nav>
+
+<div id="home" class="page active">
+<div class="panel">
+<h1>Reoveons Place</h1>
+<p>Tool Hub</p>
+</div>
+</div>
+
+<div id="themes" class="page">
+<div class="panel">
+
+<h2>Themes</h2>
+
+Background Color<br>
+<input type="color" id="bgColor"><br>
+
+Text Color<br>
+<input type="color" id="textColor"><br><br>
+
+<button onclick="applyTheme()">Apply Theme</button>
+
+</div>
+</div>
+
+<div id="username" class="page">
+<div class="panel">
+
+<h2>Username Generator</h2>
+
+Length<br>
+<input id="nameLength" type="number" value="10"><br>
+
+How many usernames?<br>
+<input id="nameCount" type="number" value="5"><br><br>
+
+<button onclick="generateUsernames()">Generate</button>
+
+<div id="nameOutput"></div>
+
+</div>
+</div>
+
+<div id="bgremove" class="page">
+<div class="panel">
+
+<h2>Background Remover</h2>
+
+Color to remove<br>
+<input type="color" id="removeColor"><br>
+
+Tolerance<br>
+<input type="range" min="10" max="150" value="60" id="tolerance"><br><br>
+
+<input type="file" id="upload" multiple><br><br>
+
+<div id="imageContainer" class="imageRow"></div>
+
+<br>
+
+<button onclick="removeBackground()">Remove Background</button>
+
+</div>
+</div>
+
+<div id="tools" class="page">
+<div class="panel">
+
+<h2>Tools</h2>
+
+<button onclick="clearImages()">Clear Images</button>
+<button onclick="downloadImages()">Download Images</button>
+
+</div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
