@@ -1,168 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Reoveons Soft Place</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cozy Toolkit</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="background"></div>
-<div class="fireplace"></div>
-
-<canvas id="particles"></canvas>
+<canvas id="bgParticles"></canvas>
 
 <header>
+<h1>Cozy Toolkit</h1>
 
-<h2>🌸 Reoveons Soft Place</h2>
-
-<nav>
-
-<button onclick="switchTab('home')">Home</button>
-<button onclick="switchTab('remover')">Background Remover</button>
-<button onclick="switchTab('username')">Username Gen</button>
-<button onclick="switchTab('font')">Font Loader</button>
-<button onclick="switchTab('socials')">Socials</button>
-<button onclick="toggleDark()">🌙</button>
-
-</nav>
-
+<div class="controls">
+<button onclick="toggleDark()">Dark Mode</button>
+<button onclick="toggleMusic()">Music</button>
+<input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+</div>
 </header>
 
+<audio id="music" loop>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
 
-<main>
-
-<!-- HOME -->
-
-<section id="home" class="tab active">
-
-<div class="card">
-
-<h1>reoveon</h1>
-<p>"soft spaces create soft minds"</p>
-<p>welcome to my cozy place on the internet</p>
-
-</div>
-
-</section>
-
-
-<!-- BACKGROUND REMOVER -->
-
-<section id="remover" class="tab">
-
-<div class="card">
+<div class="container">
 
 <h2>Background Remover</h2>
 
-<input type="file" id="imageUpload" multiple>
+<div id="dropZone">Drag & Drop Images Here or Click</div>
+<input type="file" id="imageUpload" multiple hidden>
 
-<br><br>
-
+<label>Color To Remove</label>
 <input type="color" id="removeColor" value="#ffffff">
 
-<button onclick="removeBackground()">Remove</button>
+<button onclick="removeBackground()">Remove Background</button>
 
 <div id="imageContainer"></div>
 
-</div>
-
-</section>
-
-
-<!-- USERNAME GENERATOR -->
-
-<section id="username" class="tab">
-
-<div class="card">
-
-<h2>Username Generator</h2>
-
-<label>Length</label>
-<input type="number" id="charLength" min="1" max="10" value="5">
-
-<br><br>
-
-<label>Amount</label>
-<input type="number" id="userAmount" min="1" max="100" value="10">
-
-<br><br>
-
-<button onclick="generateUsernames()">Generate</button>
-
-<div id="usernameList"></div>
-
-</div>
-
-</section>
-
-
-<!-- FONT LOADER -->
-
-<section id="font" class="tab">
-
-<div class="card">
-
-<h2>Font Loader</h2>
+<h2>Font Image Generator</h2>
 
 <input type="file" id="fontUpload" accept=".ttf,.otf">
+<input type="text" id="fontText" placeholder="Type text here">
 
-<br><br>
-
-<input type="text" id="fontText" placeholder="Type text">
-
-<br><br>
-
-<button onclick="renderFont()">Render</button>
+<button onclick="renderFont()">Render Text</button>
 
 <canvas id="fontCanvas"></canvas>
 
 </div>
 
-</section>
-
-
-<!-- SOCIALS -->
-
-<section id="socials" class="tab">
-
-<div class="card">
-
-<h2>Socials</h2>
-
-<div class="social">
-
-<a href="https://youtube.com/@reoveon" target="_blank">YouTube → reoveon</a>
-
-<a href="https://tiktok.com/@reoveon" target="_blank">TikTok → reoveon</a>
-
-<a href="https://discord.com/users/he5k" target="_blank">Discord → he5k</a>
-
-</div>
-
-</div>
-
-</section>
-
-</main>
-
-
-<!-- MUSIC PLAYER -->
-
-<div class="musicPlayer">
-
-<button onclick="toggleMusic()">▶ / ⏸</button>
-
-<input type="range" min="0" max="1" step="0.01" value="0.5" id="volume">
-
-</div>
-
-<audio id="music" loop>
-<source src="music.mp3">
-</audio>
-
 <script src="script.js"></script>
-
 </body>
 </html>

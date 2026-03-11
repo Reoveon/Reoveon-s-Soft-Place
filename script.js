@@ -1,17 +1,10 @@
-function switchTab(tab){
-document.querySelectorAll(".tab").forEach(t=>{
-t.classList.remove("active")
-})
-document.getElementById(tab).classList.add("active")
-}
-
-/* dark mode */
+/* DARK MODE */
 
 function toggleDark(){
 document.body.classList.toggle("dark")
 }
 
-/* music */
+/* MUSIC */
 
 const music=document.getElementById("music")
 
@@ -27,40 +20,41 @@ document.getElementById("volume").addEventListener("input",e=>{
 music.volume=e.target.value
 })
 
-/* particles */
+/* PARTICLES */
 
-const canvas=document.getElementById("particles")
-const ctx=canvas.getContext("2d")
+const bg=document.getElementById("bgParticles")
+const ctx=bg.getContext("2d")
 
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
+bg.width=window.innerWidth
+bg.height=window.innerHeight
 
 let particles=[]
 
-for(let i=0;i<90;i++){
+for(let i=0;i<80;i++){
 particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
+x:Math.random()*bg.width,
+y:Math.random()*bg.height,
 size:Math.random()*3,
-speed:Math.random()*0.5
+speed:Math.random()*0.4
 })
 }
 
 function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height)
-ctx.fillStyle="rgba(255,255,255,0.6)"
+
+ctx.clearRect(0,0,bg.width,bg.height)
 
 particles.forEach(p=>{
+
 p.y-=p.speed
 
 if(p.y<0){
-p.y=canvas.height
-p.x=Math.random()*canvas.width
+p.y=bg.height
 }
 
 ctx.beginPath()
 ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
 ctx.fill()
+
 })
 
 requestAnimationFrame(animate)
@@ -68,50 +62,41 @@ requestAnimationFrame(animate)
 
 animate()
 
-/* username generator */
+/* DRAG DROP */
 
-function generateUsernames(){
+const dropZone=document.getElementById("dropZone")
+const upload=document.getElementById("imageUpload")
 
-const length=document.getElementById("charLength").value
-const amount=document.getElementById("userAmount").value
+dropZone.onclick=()=>upload.click()
 
-const chars="abcdefghijklmnopqrstuvwxyz"
-let output=""
+dropZone.addEventListener("dragover",e=>{
+e.preventDefault()
+dropZone.classList.add("drag")
+})
 
-for(let i=0;i<amount;i++){
+dropZone.addEventListener("dragleave",()=>{
+dropZone.classList.remove("drag")
+})
 
-let name=""
+dropZone.addEventListener("drop",e=>{
+e.preventDefault()
+dropZone.classList.remove("drag")
+upload.files=e.dataTransfer.files
+})
 
-for(let j=0;j<length;j++){
-name+=chars[Math.floor(Math.random()*chars.length)]
-}
-
-output+=name+"<br>"
-}
-
-document.getElementById("usernameList").innerHTML=output
-}
-
-/* ===========================
-BACKGROUND REMOVER
-=========================== */
+/* BACKGROUND REMOVER */
 
 function removeBackground(){
 
-const files=document.getElementById("imageUpload").files
+const files=upload.files
 const container=document.getElementById("imageContainer")
-const removeColor=document.getElementById("removeColor").value
+const color=document.getElementById("removeColor").value
 
 container.innerHTML=""
 
-if(files.length===0){
-alert("Upload an image first")
-return
-}
-
-const r=parseInt(removeColor.substr(1,2),16)
-const g=parseInt(removeColor.substr(3,2),16)
-const b=parseInt(removeColor.substr(5,2),16)
+const r=parseInt(color.substr(1,2),16)
+const g=parseInt(color.substr(3,2),16)
+const b=parseInt(color.substr(5,2),16)
 
 Array.from(files).forEach(file=>{
 
@@ -128,34 +113,32 @@ canvas.height=img.height
 
 ctx.drawImage(img,0,0)
 
-const imageData=ctx.getImageData(0,0,canvas.width,canvas.height)
-const data=imageData.data
+let data=ctx.getImageData(0,0,canvas.width,canvas.height)
+let pixels=data.data
 
-for(let i=0;i<data.length;i+=4){
+for(let i=0;i<pixels.length;i+=4){
 
-let dr=data[i]-r
-let dg=data[i+1]-g
-let db=data[i+2]-b
+let dr=pixels[i]-r
+let dg=pixels[i+1]-g
+let db=pixels[i+2]-b
 
-let distance=Math.sqrt(dr*dr+dg*dg+db*db)
+let dist=Math.sqrt(dr*dr+dg*dg+db*db)
 
-if(distance<80){
-data[i+3]=0
+if(dist<80){
+pixels[i+3]=0
 }
 
 }
 
-ctx.putImageData(imageData,0,0)
+ctx.putImageData(data,0,0)
 
-const download=document.createElement("a")
-download.innerText="Download Image"
-download.href=canvas.toDataURL("image/png")
-download.download="removed.png"
+let link=document.createElement("a")
+link.href=canvas.toDataURL("image/png")
+link.download="removed.png"
+link.innerText="Download Image"
 
 container.appendChild(canvas)
-container.appendChild(document.createElement("br"))
-container.appendChild(download)
-container.appendChild(document.createElement("hr"))
+container.appendChild(link)
 
 }
 
@@ -163,26 +146,21 @@ container.appendChild(document.createElement("hr"))
 
 }
 
-/* ===========================
-FONT LOADER
-=========================== */
+/* FONT LOADER */
 
 let loadedFont=null
 
-document.getElementById("fontUpload").addEventListener("change",async function(e){
+document.getElementById("fontUpload").addEventListener("change",async e=>{
 
 const file=e.target.files[0]
-if(!file) return
+if(!file)return
 
 const font=new FontFace("customFont",file)
 
 await font.load()
-
 document.fonts.add(font)
 
 loadedFont="customFont"
-
-alert("Font Loaded!")
 
 })
 
@@ -197,9 +175,9 @@ canvas.height=200
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-ctx.fillStyle="#000"
 ctx.textAlign="center"
 ctx.textBaseline="middle"
+ctx.fillStyle="#000"
 
 if(loadedFont){
 ctx.font="60px "+loadedFont
@@ -209,19 +187,11 @@ ctx.font="60px sans-serif"
 
 ctx.fillText(text,canvas.width/2,canvas.height/2)
 
-/* download button */
-
 let link=document.createElement("a")
-link.innerText="Download Text Image"
 link.href=canvas.toDataURL("image/png")
-link.download="font.png"
+link.download="text.png"
+link.innerText="Download Text"
 
-const parent=canvas.parentElement
-
-if(!document.getElementById("fontDownload")){
-link.id="fontDownload"
-parent.appendChild(document.createElement("br"))
-parent.appendChild(link)
-}
+canvas.parentElement.appendChild(link)
 
 }
